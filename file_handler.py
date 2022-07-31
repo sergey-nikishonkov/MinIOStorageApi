@@ -55,11 +55,11 @@ def getter(files: list[Image]) -> json:
             response = _client.get_object(bucket, file.title)
         except MaxRetryError as max_retry:
             raise HTTPException(503, detail='MinIO unavailable') from max_retry
-        img = base64.encodebytes(response.data).decode('utf-8')
+
         try:
             title = file.title
             date_register = file.date_register.isoformat()
-            data.append({'title': title, 'date': date_register, 'file': img})
+            data.append({'title': title, 'date': date_register, 'file': response.data})
         finally:
             response.close()
             response.release_conn()
